@@ -1,10 +1,12 @@
 const express=require('express')
 const {NoteModel}=require('../model/note.model')
+const { UserModel } = require('../model/user.model')
 
 const notesRouter=express.Router()
 
-notesRouter.get('/', (req,res) =>{
-    res.send('All the notes')
+notesRouter.get('/', async(req,res) =>{
+    const users=await UserModel.find()
+    res.send(users)
 })
 
 notesRouter.post('/create', async(req,res) =>{
@@ -19,7 +21,7 @@ notesRouter.patch('/update/:id', async(req,res) =>{
     try {
         const id=req.params.id;
         const payload=req.body;
-        await payload.findByIdAndUpdate(id,payload)
+        await payload.findByIdAndUpdate({_id:id}, payload)
         res.send({"msg":`Note with id: ${id} has been updated.`})
     } catch (err) {
         res.send({'msg':'something went wrong', 'error':err.message})

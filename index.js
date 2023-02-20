@@ -4,11 +4,31 @@ const {userRouter} = require('./routes/user.routes')
 const {notesRouter} =require('./routes/note.routes')
 const {authenticate} =require('./middlewares/authenticate.middleware')
 require('dotenv').config()
+const swagerUI=require('swagger-ui-express')
+const swaggerJsdoc = require('swagger-jsdoc')
 
 
 const app=express()
-
 app.use(express.json())
+
+const options={
+    definition:{
+        openapi:'3.0.0',
+        info:{
+            title:'learning swagger for first time',
+            version:'1.0.0'
+        },
+        server:[
+            {
+                url:'http://localhost:8888'
+            }
+        ]
+    },
+    apis:['./routes/*.js']
+}
+
+const swaggerSpec=swaggerJsdoc(options)
+app.use('/api-docs',swagerUI.serve,swagerUI.setup(swaggerSpec))
 
 app.get('/', (req,res) =>{
     res.send('Welcome')
